@@ -140,9 +140,26 @@ public class DefaultEmailSenderProvider implements EmailSenderProvider {
             setupTruststore(props);
         }
 
-        props.setProperty("mail.smtp.timeout", "10000");
-        props.setProperty("mail.smtp.connectiontimeout", "10000");
-        props.setProperty("mail.smtp.writetimeout", "10000");
+        // changes happen here ..... changing from 10000 to 30000
+        String KEYCLOAK_SMTP_TIMEOUT = "30000";
+        if(System.getenv("KEYCLOAK_SMTP_TIMEOUT") != null)
+            KEYCLOAK_SMTP_TIMEOUT = System.getenv("KEYCLOAK_SMTP_TIMEOUT");
+        props.setProperty("mail.smtp.timeout", KEYCLOAK_SMTP_TIMEOUT);
+
+        String KEYCLOAK_SMTP_CONNECTION_TIMEOUT = "30000";
+        if(System.getenv("KEYCLOAK_SMTP_CONNECTION_TIMEOUT") != null)
+            KEYCLOAK_SMTP_CONNECTION_TIMEOUT = System.getenv("KEYCLOAK_SMTP_CONNECTION_TIMEOUT");
+        props.setProperty("mail.smtp.connectiontimeout", KEYCLOAK_SMTP_CONNECTION_TIMEOUT);
+
+        String KEYCLOAK_SMTP_WRITE_TIMEOUT = "30000";
+        if(System.getenv("KEYCLOAK_SMTP_WRITE_TIMEOUT") != null)
+            KEYCLOAK_SMTP_WRITE_TIMEOUT = System.getenv("KEYCLOAK_SMTP_WRITE_TIMEOUT");
+        props.setProperty("mail.smtp.writetimeout", KEYCLOAK_SMTP_WRITE_TIMEOUT);
+
+        // print it so we are aware of its value
+        logger.info("value for KEYCLOAK_SMTP_TIMEOUT is "+KEYCLOAK_SMTP_TIMEOUT);
+        logger.info("value for KEYCLOAK_SMTP_CONNECTION_TIMEOUT is "+KEYCLOAK_SMTP_CONNECTION_TIMEOUT);
+        logger.info("value for KEYCLOAK_SMTP_WRITE_TIMEOUT is "+KEYCLOAK_SMTP_WRITE_TIMEOUT);
 
         String envelopeFrom = config.get("envelopeFrom");
         if (isNotBlank(envelopeFrom)) {
